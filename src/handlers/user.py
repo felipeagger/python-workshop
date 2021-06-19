@@ -18,7 +18,13 @@ class UsersHandler(Resource):
 
     def post(self):
 
-        user = User(request)
+        params = {
+            'name': request.json['name'],
+            'email': request.json['email'],
+            'birth_date': request.json['birth_date']
+        }
+
+        user = User(**params)
         db.session.add(user)
         db.session.commit()
 
@@ -39,10 +45,13 @@ class UserHandler(Resource):
         if not user:
             return jsonify(error='Usuario nao encontrado!')
 
-        user.update(request)
+        user.name = request.json['name']
+        user.email = request.json['email']
+        user.birth_date = request.json['birth_date']
+
         db.session.commit()
 
-        return jsonify(sucess='Cadastro atulizado com sucesso!')
+        return jsonify(sucess='Usuario atualizado com sucesso!')
 
     def delete(self, id):
         user = User.query.get(id)
